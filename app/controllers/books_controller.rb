@@ -1,10 +1,18 @@
 class BooksController < ApplicationController
+  before_action :authenticate_user!
+  before_action :ensure_correct_user,{only:[:edit, :update, :destroy]}
+  def new
+    @book = Book.new
+  end
 
   def show
   	@book = Book.find(params[:id])
+    @newbook = Book.new
+    @user = current_user
   end
 
   def index
+    @book = Book.new
   	@books = Book.all #一覧表示するためにBookモデルの情報を全てくださいのall
   end
 
@@ -42,7 +50,16 @@ class BooksController < ApplicationController
   private
 
   def book_params
-  	params.require(:book).permit(:title)
+  	params.require(:book).permit(:title, :body)
+  end
+  def user_params
+    params.require(:user).permit(:name, :introduction, :profile_image)
+  end
+  def ensure_correct_user
+    @book = Book.find(params[:id])
+    if @book.user != current_user
+    redirect_to books_path
+    end
   end
 
 end
