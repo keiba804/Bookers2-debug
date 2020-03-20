@@ -10,10 +10,24 @@
 			<th>introduction</th>
 			<th><%= user.introduction %></th>
 		</tr>
+		<tr>
+			<th>following</th>
+			<th><%= user.follower.count %></th>
+		</tr>
+		<tr>
+			<th>followed</th>
+			<th><%= user.followed.count %></th>
+		</tr>
 </table>
 
-<% if @user == current_user %>
-<div class="row">
-	<%= link_to '',edit_user_path(user), class: "col-xs-12 btn btn-default glyphicon glyphicon-wrench edit_user_#{user.id}" %>
-</div>
+<% if user == current_user %>
+	<div class="row">
+		<%= link_to '',edit_user_path(user), class: "col-xs-12 btn btn-default glyphicon glyphicon-wrench edit_user_#{user.id}" %>
+	</div>
+<% else %>
+	<% if current_user.following?(user) %>
+       <%= link_to 'unfollow', unfollow_path(user.id), method: :POST %>
+    <% else %>
+       <%= link_to 'follow', follow_path(user.id), method: :POST %>
+    <% end %>
 <% end %>

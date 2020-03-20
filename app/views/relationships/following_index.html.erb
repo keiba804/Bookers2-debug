@@ -4,12 +4,11 @@
 	<%= render 'users/profile', user: current_user %>
 	<!--メモ　右側の指定に注意。そこを間違えるとエラーが発生して表示されない -->
 
-	<h2>New book</h2>
-	<%= render 'books/newform', book: @book %>
+
 </div>
 
 <div class="col-xs-9">
-	<h2>Users</h2>
+	<h2>following</h2>
 	<!--users一覧 -->
 	<table class="table">
 		<thead>
@@ -21,16 +20,16 @@
 		</thead>
 
 		<tbody>
-			<% @users.each do |user| %>
+			<% @user.following_user.where.not(id: current_user.id).each do |user| %>
 			<tr>
 				<td><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %></td>
 				<td><%= user.name%></td>
 				<td><%= link_to "Show", user, class: "user_#{user.id}" %></td>
 				<td>
-					<p>following:<%= link_to following_index_path(user) do %><%= user.follower.count %><% end %></p>
+					<p>following:<%= link_to follower_index_path(user) do %><%= user.follower.count %><% end %></p>
 				</td>
 				<td>
-					<p>followed:<%= link_to follower_index_path(user) do %><%= user.followed.count %><% end %></p>
+					<p>followed:<%= link_to followed_index_path(user) do %><%= user.followed.count %><% end %></p>
 				</td>
 				<td><% if current_user.following?(user) %>
 				       <%= link_to 'unfollow', unfollow_path(user.id), method: :POST %>
